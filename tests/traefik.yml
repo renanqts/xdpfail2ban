@@ -1,0 +1,21 @@
+experimental:
+  localPlugins:
+    dev:
+      moduleName: github.com/renanqts/xdpfail2ban
+
+log:
+  level: DEBUG
+
+entryPoints:
+  http:
+    address: ":8000"
+    forwardedHeaders:
+      insecure: true
+
+api:
+  dashboard: true
+  insecure: true
+
+providers:
+  file:
+    filename: /plugins-local/src/github.com/renanqts/xdpfail2ban/tests/rules.yml

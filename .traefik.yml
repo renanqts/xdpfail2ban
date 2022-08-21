@@ -1,0 +1,13 @@
+displayName: XDPFail2Ban
+type: middleware
+
+import: github.com/renanqts/xdpfail2ban
+
+summary: Blacklist IP via URL regex match
+
+testData:
+  rules:
+    urlregexps: []
+    bantime: 3h
+    findtime: 10m
+    maxretry: 4

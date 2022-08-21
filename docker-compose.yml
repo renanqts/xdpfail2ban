@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  traefik:
+    image: traefik:v2.8
+    ports:
+      - "8000:8000"
+      - "8080:8080"
+    volumes:
+      - .:/plugins-local/src/github.com/renanqts/xdpfail2ban
+    command:
+      - --configfile
+      - /plugins-local/src/github.com/renanqts/xdpfail2ban/tests/traefik.yml
+
+  whoami:
+    image: containous/whoami
+    command:
+     - --port=5000
+
+  xdpdropperdummy:
+    build:
+      context: ./
+      dockerfile: tests/dummy/Dockerfile.dummy
+    ports:
+      - 8081:8081
