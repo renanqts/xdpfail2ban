@@ -6,6 +6,8 @@ import: github.com/renanqts/xdpfail2ban
 summary: Blacklist IP via URL regex match
 
 testData:
+  loglevel: INFO
+  xdpdropperurl: http://xdpdropper:8080
   rules:
     urlregexps: []
     bantime: 3h
