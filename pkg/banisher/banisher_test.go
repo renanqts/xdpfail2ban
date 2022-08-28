@@ -5,8 +5,14 @@ import (
 	"time"
 
 	"github.com/renanqts/xdpfail2ban/pkg/ttlmap"
-	"github.com/stretchr/testify/assert"
 )
+
+func assertEqual(t *testing.T, a interface{}, b interface{}) {
+	if a == b {
+		return
+	}
+	t.Fatal()
+}
 
 type MockHTTPClient struct {
 	FakeRequest func(string, string, int, interface{}) error
@@ -177,11 +183,13 @@ func TestBanController(t *testing.T) {
 			value := b.viewedIPs.Get(tc.ip)
 			if tc.shouldExist {
 				actualIPView = value.(ViewedIP)
-				assert.Equal(t, tc.expectedViewedIP.viewed, actualIPView.viewed)
-				assert.Equal(t, tc.expectedViewedIP.counter, actualIPView.counter)
-				assert.Equal(t, tc.expectedViewedIP.ban, actualIPView.ban)
+				assertEqual(t, tc.expectedViewedIP.viewed, actualIPView.viewed)
+				assertEqual(t, tc.expectedViewedIP.counter, actualIPView.counter)
+				assertEqual(t, tc.expectedViewedIP.ban, actualIPView.ban)
 			} else {
-				assert.Nil(t, value)
+				if value != nil {
+					t.Fatal()
+				}
 			}
 		})
 	}

@@ -7,9 +7,14 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
+
+func assertEqual(t *testing.T, a interface{}, b interface{}) {
+	if a == b {
+		return
+	}
+	t.Fatal()
+}
 
 func TestRequest(t *testing.T) {
 	tests := []struct {
@@ -76,15 +81,19 @@ func TestRequest(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			server := httptest.NewServer(
 				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					assert.Equal(t, tc.expectedMethod, r.Method)
+					assertEqual(t, tc.expectedMethod, r.Method)
 
 					if len(tc.expectedBody) == 0 {
 						reqBody, err := io.ReadAll(r.Body)
-						assert.Nil(t, err)
+						if err != nil {
+							t.Fatal()
+						}
 						var body string
 						err = json.Unmarshal(reqBody, &body)
-						assert.Nil(t, err)
-						assert.Equal(t, tc.expectedBody, body)
+						if err != nil {
+							t.Fatal()
+						}
+						assertEqual(t, tc.expectedBody, body)
 					}
 
 					if tc.statusCode != 0 {
@@ -95,7 +104,9 @@ func TestRequest(t *testing.T) {
 			defer server.Close()
 			c := New(server.URL)
 			err := c.Request("/foobar", tc.method, tc.expectedStatusCode, tc.body)
-			assert.Equal(t, tc.err, err)
+			if err != nil {
+				assertEqual(t, tc.err.Error(), err.Error())
+			}
 		})
 	}
 
